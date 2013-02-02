@@ -1,0 +1,25 @@
+[user]
+  name = Naoyoshi Aikawa
+  email = n.aikawa91@gmail.com
+[color]
+  ui = auto
+[alias]
+  amend = commit --amend -C HEAD
+  co = checkout
+  logg = log --stat --decorate=short --pretty=format:'%C(yellow)%h %Cgreen%cr %Cblue%cn %Cred%d %Creset%s'
+  history = log --graph --date=short --decorate=short --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Cred%d %Creset%s'
+[core]
+  editor = emacs
+[mergetool "diffmerge"]
+  cmd = diffmerge --merge --result=$MERGED $LOCAL $BASE $REMOTE
+  trustExitCode = true
+[merge]
+  tool = diffmerge
+[mergetool]
+  keepBackup = false
+[diff]
+  tool = diffmerge
+[difftool "diffmerge"]
+  cmd = diffmerge $LOCAL $REMOTE
+[push]
+  default = current
