@@ -2,3 +2,8 @@
 
 !.gitconfig
 !.screenrc
+!.zshenv
+!.zshrc
+!.zshrc.mac
+!.zsh.d
+!.zsh.d/*
