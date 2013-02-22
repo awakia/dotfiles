@@ -19,8 +19,12 @@ esac
 # see man page of zshmisc and zshzle
 
 case "$KERNEL" in
-Linux|FreeBSD|Darwin)
+Darwin)
 PROMPT="[%F{green}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
+PROMPT2="%_%# "
+;;
+Linux|FreeBSD)
+PROMPT="[%F{blue}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
 PROMPT2="%_%# "
 ;;
 *)
