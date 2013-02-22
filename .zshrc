@@ -16,21 +16,11 @@ dhcp*)
 SHORTHOST=mbp;;
 esac
 
-#30  31  32  33  34  35  36  37
-#黒  赤  緑  黄  青  紫  水  白
-local BLACK=$'%{\e[1;30m%}'
-local RED=$'%{\e[1;31m%}'
-local GREEN=$'%{\e[1;32m%}'
-local YELLOW=$'%{\e[1;33m%}'
-local BLUE=$'%{\e[1;34m%}'
-local MAGENTA=$'%{\e[1;35m%}'
-local CYAN=$'%{\e[1;36m%}'
-local WHITE=$'%{\e[1;37m%}'
-local DEFAULT=$'%{\e[1;m%}'
+# see man page of zshmisc and zshzle
 
 case "$KERNEL" in
 Linux|FreeBSD|Darwin)
-PROMPT="[${GREEN}%n@${SHORTHOST} ${YELLOW}%1~${DEFAULT}]%# "
+PROMPT="[%F{green}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
 PROMPT2="%_%# "
 ;;
 *)
