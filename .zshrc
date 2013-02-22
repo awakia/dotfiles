@@ -18,14 +18,35 @@ esac
 
 # see man page of zshmisc and zshzle
 
+function git-current-branch {
+    local name st color
+    name=`git rev-parse --abbrev-ref=loose HEAD 2> /dev/null` || return
+    if [[ -z $name ]]; then
+        return
+    fi
+    st=`git status 2> /dev/null`
+    if [[ -n `echo "$st" | grep "^nothing to"` ]]; then
+        color="%F{green}"
+    elif [[ -n `echo "$st" | grep "^nothing added"` ]]; then
+        color="%F{yellow}"
+    elif [[ -n `echo "$st" | grep "^# Untracked"` ]]; then
+        color="%F{red}%B"
+    else
+        color="%F{red}"
+    fi
+    echo "$color$name%f%b"
+}
+
 case "$KERNEL" in
 Darwin)
-PROMPT="[%F{green}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
+PROMPT="[%F{green}%n@${SHORTHOST} %F{yellow}%1~%f]%# "
 PROMPT2="%_%# "
+RPROMPT="(`git-current-branch`)"
 ;;
 Linux|FreeBSD)
 PROMPT="[%F{blue}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
 PROMPT2="%_%# "
+RPROMPT="(`git-current-branch`)"
 ;;
 *)
 PROMPT="[%n@${SHORTHOST} %1~]%# "
@@ -56,6 +77,7 @@ HISTFILE=~/.zsh-history
 HISTSIZE=1000000
 SAVEHIST=1000000
 
+setopt prompt_subst
 setopt hist_ignore_dups
 setopt append_history
 setopt share_history
