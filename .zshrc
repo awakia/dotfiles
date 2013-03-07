@@ -84,6 +84,15 @@ if ! [ -e "$PAGER" ]; then PAGER=/usr/bin/more; fi
 if ! [ -e "$PAGER" ]; then PAGER=more; fi
 export PAGER
 
+# lv settings
+## -c: Allow ANSI escape sequences for text decoration (coloring)
+## -l: Allow physical lines of each logical line printed on the screen to be concatenated for cut and paste after screen refresh
+##     (Do not add newline when copying)
+export LV="-c -l"
+
+# less settings
+## -R: Allow ANSI escape sequences for text decoration (coloring)
+export LESS="-R"
 
 autoload -U compinit
 compinit
