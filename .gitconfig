@@ -8,6 +8,7 @@
   co = checkout
   logg = log --stat --decorate=short --pretty=format:'%C(yellow)%h %Cgreen%cr %Cblue%cn %Cred%d %Creset%s'
   history = log --graph --date=short --decorate=short --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn %Cred%d %Creset%s'
+	unmerged = !git --no-pager diff --name-only --diff-filter=U
 [core]
   editor = emacs
 [mergetool "diffmerge"]
