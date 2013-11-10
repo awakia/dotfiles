@@ -1,3 +1,4 @@
+export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
 export PATH=~/bin:$PATH
 export BUNDLER_EDITOR=subl
 
