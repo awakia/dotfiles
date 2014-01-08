@@ -1,5 +1,6 @@
 export PATH=/Applications/Postgres.app/Contents/MacOS/bin:$PATH
 export PATH=~/bin:$PATH
+export EDITOR=emacs
 export BUNDLER_EDITOR=subl
 
 # open new tab in same working directory on osx lion.
