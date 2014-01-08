@@ -28,3 +28,5 @@
   cmd = diffmerge $LOCAL $REMOTE
 [push]
   default = current
+[credential]
+  helper = osxkeychain
