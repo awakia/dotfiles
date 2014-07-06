@@ -106,6 +106,8 @@ alias cp='cp -i'
 alias mv='mv -i'
 alias cl='xclip -selection clipboard'
 alias grep='grep --color=auto'
+alias be='bundle exec'
+alias rake='noglob rake'
 #alias emacs='emacs -nw'
 
 
