@@ -79,8 +79,8 @@
 (require 'flymake)
 
 ;;エラーメッセージをミニバッファで表示させる
-(global-set-key "\C-e" 'flymake-goto-next-error)
-(global-set-key "\M-e" 'flymake-goto-prev-error)
+(global-set-key "\C-n" 'flymake-goto-next-error)
+(global-set-key "\M-n" 'flymake-goto-prev-error)
 
 ;; gotoした際にエラーメッセージをminibufferに表示する
 (defun display-error-message ()
