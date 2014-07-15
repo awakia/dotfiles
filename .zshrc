@@ -75,6 +75,7 @@ setopt no_flow_control
 setopt mark_dirs
 setopt transient_rprompt
 setopt auto_resume
+setopt prompt_subst
 
 disable r
 
@@ -124,6 +125,13 @@ esac
 
 # git completion
 [ -f ~/.zsh.d/git-completion.bash ] && source ~/.zsh.d/git-completion.bash
+
+precmd () {
+    RPROMPT='[%F{1}$(__git_ps1 "%s")%f]'
+}
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUPSTREAM="auto"
+GIT_PS1_SHOWCOLORHINTS=1
 
 
 # per-host settings
