@@ -75,7 +75,6 @@ setopt no_flow_control
 setopt mark_dirs
 setopt transient_rprompt
 setopt auto_resume
-setopt prompt_subst
 
 disable r
 
@@ -123,16 +122,17 @@ case "${TERM}" in screen)
 esac
 
 
-# git completion
-[ -f ~/.zsh.d/git-completion.bash ] && source ~/.zsh.d/git-completion.bash
-
-precmd () {
-    RPROMPT='[%F{1}$(__git_ps1 "%s")%f]'
-}
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWUPSTREAM="auto"
-GIT_PS1_SHOWCOLORHINTS=1
-
+# git completion/prompt
+[ -f ~/.zsh.d/git-completion.zsh ] && source ~/.zsh.d/git-completion.zsh
+if [ -f ~/.zsh.d/git-prompt.sh ]; then
+    source ~/.zsh.d/git-prompt.sh
+    GIT_PS1_SHOWDIRTYSTATE=1
+    GIT_PS1_SHOWUPSTREAM="auto"
+    GIT_PS1_SHOWCOLORHINTS=1
+    precmd () {
+        RPROMPT=[`echo $(__git_ps1 "%s")`]
+    }
+fi
 
 # per-host settings
 
