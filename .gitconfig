@@ -31,3 +31,5 @@
   default = current
 [credential]
   helper = osxkeychain
+[ghq]
+  root = ~/gocode/src

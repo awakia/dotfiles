@@ -2,6 +2,11 @@ export PATH=~/bin:$PATH
 export EDITOR=emacs
 export BUNDLER_EDITOR=subl
 
+change-repo() {
+ cd $(ghq list -p | peco)
+}
+alias cr=change-repo
+
 # open new tab in same working directory on osx lion.
 function show_working_dir { print -Pn "\e]2; %~/ \a" }
 
