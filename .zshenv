@@ -2,7 +2,7 @@ export PATH=/usr/local/bin:$PATH
 which rbenv > /dev/null 2>&1
 test $? -eq 0 && eval "$(rbenv init - zsh)"
 
-export GOPATH=~/gocode
+export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 
 # export PYENV_ROOT="${HOME}/.pyenv"
