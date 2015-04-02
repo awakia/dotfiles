@@ -29,6 +29,7 @@ brew cask install boot2docker || true
 brew cask install caffeine || true
 brew cask install coteditor || true
 brew cask install cyberduck || true
+brew cask install dash || true
 brew cask install dropbox || true
 brew cask install dropbox-encore || true
 brew cask install evernote || true
@@ -37,8 +38,12 @@ brew cask install flux || true
 brew cask install genymotion || true
 brew cask install google-chrome || true
 brew cask install google-japanese-ime || true
+brew cask install kobito || true
+brew cask install night-owl || true  # Yorufukuro
+brew cask install sketch || true
 brew cask install skitch || true
 brew cask install skype || true
+brew cask install slack || true
 brew cask install startninja || true
 brew cask install sublime-text || true
 brew cask install vagrant || true
