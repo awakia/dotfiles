@@ -33,3 +33,5 @@
   helper = osxkeychain
 [ghq]
   root = ~/gocode/src
+[url "git@github.com:"]
+  insteadOf = https://github.com/

@@ -109,6 +109,10 @@ alias grep='grep --color=auto'
 alias be='noglob bundle exec'
 #alias emacs='emacs -nw'
 
+change-repo() {
+ cd $(ghq list -p | peco)
+}
+alias cr=change-repo
 
 #title
 case "${TERM}" in screen)
