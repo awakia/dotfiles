@@ -23,6 +23,7 @@ brew tap caskroom/cask || true
 brew install brew-cask || true
 
 # install cask packages
+brew cask install atom || true
 brew cask install android-studio || true
 brew cask install bettertouchtool || true
 brew cask install boot2docker || true
