@@ -40,6 +40,7 @@ brew cask install flux || true
 brew cask install genymotion || true
 brew cask install google-chrome || true
 brew cask install google-japanese-ime || true
+brew cask install heroku-toolbelt || true
 brew cask install kobito || true
 brew cask install night-owl || true  # Yorufukuro
 brew cask install sketch || true
