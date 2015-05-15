@@ -19,6 +19,7 @@ brew upgrade
 # add repositories
 brew tap caskroom/cask || true
 brew tap caskroom/versions || true
+brew tap homebrew/science || true  # for R etc
 
 # cask
 brew install brew-cask || true
@@ -43,6 +44,7 @@ brew cask install google-japanese-ime || true
 brew cask install heroku-toolbelt || true
 brew cask install kobito || true
 brew cask install night-owl || true  # Yorufukuro
+brew cask install xquartz || true
 brew cask install sketch || true
 brew cask install skitch || true
 brew cask install skype || true
