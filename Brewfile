@@ -64,6 +64,7 @@ brew install nkf || true
 brew install node || true
 brew install peco || true
 brew install postgresql || true
+brew install pyenv-virtualenv || true
 brew install r || true
 brew install rbenv || true
 brew install ruby-build || true
