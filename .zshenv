@@ -5,9 +5,6 @@ test $? -eq 0 && eval "$(rbenv init - zsh)"
 export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
 # export PYENV_ROOT="${HOME}/.pyenv"
 # if [ -d "${PYENV_ROOT}" ]; then
 #    export PATH=${PYENV_ROOT}/bin:$PATH
