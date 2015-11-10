@@ -14,4 +14,3 @@ precmd_functions=($precmd_functions show_working_dir)
 preexec_functions=($preexec_functions show_working_dir)
 
 # alias subl='subl -w'
-alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'

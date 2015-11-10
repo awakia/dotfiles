@@ -28,11 +28,11 @@ brew install brew-cask || true
 brew cask install atom || true
 brew cask install android-studio || true
 brew cask install bettertouchtool || true
-brew cask install boot2docker || true
 brew cask install caffeine || true
 brew cask install coteditor || true
 brew cask install cyberduck || true
 brew cask install dash || true
+brew cask install dockertoolbox || true
 brew cask install dropbox || true
 brew cask install dropbox-encore || true
 brew cask install evernote || true
