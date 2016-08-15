@@ -32,7 +32,7 @@ brew cask install caffeine || true
 brew cask install coteditor || true
 brew cask install cyberduck || true
 brew cask install dash || true
-brew cask install dockertoolbox || true
+brew cask install docker || true
 brew cask install dropbox || true
 brew cask install dropbox-encore || true
 brew cask install evernote || true
