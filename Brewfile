@@ -57,6 +57,7 @@ brew cask install virtualbox || true
 brew install ascii || true
 brew install elasticsearch || true
 brew install gcc || true
+brew install ghq || true
 brew install git || true
 brew install go || true
 brew install heroku || true
