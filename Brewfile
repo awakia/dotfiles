@@ -34,7 +34,6 @@ brew cask install cyberduck || true
 brew cask install dash || true
 brew cask install docker || true
 brew cask install dropbox || true
-brew cask install dropbox-encore || true
 brew cask install evernote || true
 brew cask install firefox || true
 brew cask install flux || true  # Cutting blue light
