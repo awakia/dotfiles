@@ -50,7 +50,7 @@ brew cask install skitch || true
 brew cask install skype || true
 brew cask install slack || true
 brew cask install startninja || true
-brew cask install sublime-text3 || true
+brew cask install sublime-text || true
 brew cask install vagrant || true
 brew cask install virtualbox || true
 
