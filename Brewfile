@@ -56,6 +56,7 @@ brew cask install zeplin || true
 
 # install brew packages
 brew install ascii || true
+brew install awscli || true
 brew install elasticsearch || true
 brew install gcc || true
 brew install ghq || true
