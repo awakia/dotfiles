@@ -52,6 +52,7 @@ brew cask install startninja || true
 brew cask install sublime-text || true
 brew cask install vagrant || true
 brew cask install virtualbox || true
+brew cask install zeplin || true
 
 # install brew packages
 brew install ascii || true
