@@ -4,6 +4,7 @@
 !.emacs
 !.gitconfig
 !.screenrc
+!.tmux.conf
 !.zshenv
 !.zshrc
 !.zshrc.mac
