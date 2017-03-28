@@ -29,3 +29,6 @@ precmd_functions=($precmd_functions show_working_dir)
 preexec_functions=($preexec_functions show_working_dir)
 
 # alias subl='subl -w'
+
+## let aws sdk to use ~/.aws/config and ~/.aws/credentials
+export AWS_SDK_LOAD_CONFIG=1
