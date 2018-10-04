@@ -76,7 +76,7 @@ brew install tree || true
 brew install wget || true
 
 # link applications
-berw linkapps
+brew linkapps
 
 # remove outdated versions from teh cellar
 brew cleanup
