@@ -37,28 +37,26 @@ brew cask install dropbox || true
 brew cask install evernote || true
 brew cask install firefox || true
 brew cask install flux || true  # Cutting blue light
-brew cask install genymotion || true  # Fast Android emurator
+# brew cask install genymotion || true  # Fast Android emurator
 brew cask install google-chrome || true
 brew cask install google-japanese-ime || true
 brew cask install kobito || true
 brew cask install licecap || true  # GIF animation caputuring
 brew cask install night-owl || true  # Yorufukuro
-brew cask install xquartz || true
+# brew cask install xquartz || true
 brew cask install sketch || true
 brew cask install skitch || true
 brew cask install skype || true
 brew cask install slack || true
 brew cask install startninja || true
 brew cask install sublime-text || true
-brew cask install vagrant || true
-brew cask install virtualbox || true
+brew cask install visual-studio-code || true
 brew cask install zeplin || true
 
 # install brew packages
 brew install ascii || true
 brew install awscli || true
 brew install elasticsearch || true
-brew install gcc || true
 brew install ghq || true
 brew install git || true
 brew install go || true
