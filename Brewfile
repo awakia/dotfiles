@@ -74,8 +74,5 @@ brew install sqlite || true
 brew install tree || true
 brew install wget || true
 
-# link applications
-brew linkapps
-
 # remove outdated versions from teh cellar
 brew cleanup
