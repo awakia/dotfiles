@@ -19,7 +19,6 @@ brew upgrade
 # add repositories
 brew tap caskroom/cask || true
 brew tap caskroom/versions || true
-brew tap homebrew/science || true  # for R etc
 
 # cask
 brew install brew-cask || true
