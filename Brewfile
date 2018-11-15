@@ -37,8 +37,9 @@ brew cask install evernote || true
 brew cask install flux || true  # Cutting blue light
 # brew cask install genymotion || true  # Fast Android emurator
 brew cask install google-chrome || true
-brew cask install kobito || true
+brew cask install google-cloud-sdk || true
 # brew cask install licecap || true  # GIF animation caputuring
+brew cask install minikube || true
 # brew cask install night-owl || true  # Yorufukuro
 # brew cask install xquartz || true
 brew cask install sketch || true
