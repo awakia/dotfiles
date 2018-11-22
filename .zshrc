@@ -20,7 +20,7 @@ esac
 
 case "$KERNEL" in
 Darwin)
-PROMPT="[%F{green}%n@${SHORTHOST} %F{yellow}%1~%F{default}]%# "
+PROMPT="[%F{green}%n %F{yellow}%1~%F{default}]%# "
 PROMPT2="%_%# "
 ;;
 Linux|FreeBSD)
