@@ -1,6 +1,6 @@
 [user]
-  name = Naoyoshi Aikawa
-  email = n.aikawa91@gmail.com
+	name = Naoyoshi Aikawa
+	email = n.aikawa91@gmail.com
 [color]
   ui = auto
 [alias]
@@ -13,7 +13,7 @@
   unmerged = !git --no-pager diff --name-only --diff-filter=U
   sync = !git checkout master && git pull origin master && git fetch -p origin && git branch -d $(git branch --merged | grep -v master | grep -v '*') && git push origin $(git branch -r --merged | grep origin/ | grep -v master | sed s~origin/~:~)
   alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
-	sync-safe = "git branch checkout master && git pull origin master && git fetch -p origin && git branch -d $(git branch --merged | grep -v master | grep -v '*')"
+	sync-safe = !git branch checkout master && git pull origin master && git fetch -p origin && git branch -d $(git branch --merged | grep -v master | grep -v '*')
   ignore = !"f() { local s=$1; shift; while [ $# -gt 0 ]; do s="$s,$1"; shift; done; curl "https://www.gitignore.io/api/$s"; }; f"
 	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
 	openpr = "!f() { hub browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"
@@ -42,3 +42,8 @@
 	file = ~/.mailmap
 [github]
 	user = awakia
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

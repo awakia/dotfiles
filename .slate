@@ -1,0 +1,16 @@
+
+# https://github.com/jigish/slate/blob/master/Slate/default.slate
+# If no ~/.slate file exists this is the file that will be used.
+
+config defaultToCurrentScreen true
+config nudgePercentOf screenSize
+config resizePercentOf screenSize
+
+# Push Bindings
+bind right:cmd  push right bar-resize:screenSizeX/2
+bind left:cmd   push left  bar-resize:screenSizeX/2
+bind up:cmd     push up    bar-resize:screenSizeY
+#bind down:cmd   focus behind
+
+# Window Hints
+bind esc:cmd hint
