@@ -17,6 +17,7 @@ fi
 
 export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
+export GO111MODULE=on
 
 change-repo() {
  cd $(ghq list -p | peco)
