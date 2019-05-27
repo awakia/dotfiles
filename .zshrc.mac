@@ -22,6 +22,9 @@ export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
+# added by travis gem
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
+
 change-repo() {
  cd $(ghq list -p | peco)
 }
