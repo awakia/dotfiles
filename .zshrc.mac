@@ -15,6 +15,9 @@ if [ -d "${PYENV_ROOT}" ]; then
    eval "$(pyenv virtualenv-init -)"
 fi
 
+# pipenv
+export PIPENV_VENV_IN_PROJECT=1
+
 export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
