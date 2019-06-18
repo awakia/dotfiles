@@ -14,9 +14,15 @@ if [ -d "${PYENV_ROOT}" ]; then
    eval "$(pyenv init -)"
    eval "$(pyenv virtualenv-init -)"
 fi
+# fix gettext (git stash etc. used) related bug related to pyenv
+export PATH=/usr/local/opt/gettext/bin:$PATH
 
 # pipenv
+export PIPENV_IGNORE_VIRTUALENVS=1
 export PIPENV_VENV_IN_PROJECT=1
+
+# chromium
+export PATH=$PATH:~/src/chromium.googlesource.com/chromium/tools/depot_tools
 
 export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
