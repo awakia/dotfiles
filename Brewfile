@@ -47,6 +47,7 @@ brew cask install startninja || true
 brew cask install sublime-text || true
 brew cask install visual-studio-code || true
 # brew cask install zeplin || true
+brew cask install zoomus || true
 
 
 ## install brew packages
