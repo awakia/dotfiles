@@ -1,10 +1,15 @@
 export EDITOR=emacs
-export BUNDLER_EDITOR=subl
+export BUNDLER_EDITOR=code
 
 # rbenv
 export PATH=/usr/local/bin:$PATH
 which rbenv > /dev/null 2>&1
 test $? -eq 0 && eval "$(rbenv init - zsh)"
+
+# nodenv
+export PATH="$HOME/.nodenv/bin:$PATH"
+which nodenv > /dev/null 2>&1
+test $? -eq 0 && eval "$(nodenv init -)"
 
 # pyenv
 export PYENV_ROOT="${HOME}/.pyenv"
@@ -12,7 +17,7 @@ if [ -d "${PYENV_ROOT}" ]; then
    export PATH=${PYENV_ROOT}/bin:$PATH
    export PYENV_VIRTUALENV_DISABLE_PROMPT=1
    eval "$(pyenv init -)"
-   eval "$(pyenv virtualenv-init -)"
+   # eval "$(pyenv virtualenv-init -)"
 fi
 # fix gettext (git stash etc. used) related bug related to pyenv
 export PATH=/usr/local/opt/gettext/bin:$PATH
@@ -21,9 +26,7 @@ export PATH=/usr/local/opt/gettext/bin:$PATH
 export PIPENV_IGNORE_VIRTUALENVS=1
 export PIPENV_VENV_IN_PROJECT=1
 
-# chromium
-export PATH=$PATH:~/src/chromium.googlesource.com/chromium/tools/depot_tools
-
+# go
 export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
@@ -41,8 +44,6 @@ function show_working_dir { print -Pn "\e]2; %~/ \a" }
 
 precmd_functions=($precmd_functions show_working_dir)
 preexec_functions=($preexec_functions show_working_dir)
-
-# alias subl='subl -w'
 
 ## let aws sdk to use ~/.aws/config and ~/.aws/credentials
 export AWS_SDK_LOAD_CONFIG=1
