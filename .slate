@@ -7,10 +7,10 @@ config nudgePercentOf screenSize
 config resizePercentOf screenSize
 
 # Push Bindings
-bind right:cmd  push right bar-resize:screenSizeX/2
-bind left:cmd   push left  bar-resize:screenSizeX/2
-bind up:cmd     push up    bar-resize:screenSizeY
-#bind down:cmd   focus behind
+bind right:cmd:alt  push right bar-resize:screenSizeX/2
+bind left:cmd:alt   push left  bar-resize:screenSizeX/2
+bind up:cmd:alt     push up    bar-resize:screenSizeY
+#bind down:cmd:alt   focus behind
 
 # Window Hints
-bind esc:cmd hint
+bind esc:cmd:alt hint
