@@ -19,6 +19,8 @@ if [ -d "${PYENV_ROOT}" ]; then
    eval "$(pyenv init -)"
    # eval "$(pyenv virtualenv-init -)"
 fi
+export CLOUDSDK_PYTHON=$PYENV_ROOT/shims/python
+
 # fix gettext (git stash etc. used) related bug related to pyenv
 export PATH=/usr/local/opt/gettext/bin:$PATH
 
