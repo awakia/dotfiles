@@ -19,6 +19,7 @@ brew upgrade
 ## install by appstore
 # amphetamine
 # bear
+# better snap tool
 
 
 ## install applications
