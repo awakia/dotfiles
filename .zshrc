@@ -75,6 +75,7 @@ setopt no_flow_control
 setopt mark_dirs
 setopt transient_rprompt
 setopt auto_resume
+setopt nohistexpand
 
 disable r
 
