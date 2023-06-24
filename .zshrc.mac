@@ -34,6 +34,10 @@ export GOPATH=~
 export PATH=$GOPATH/bin:$PATH
 export GO111MODULE=on
 
+# Java for android studio
+# After `brew install --cask adoptopenjdk/openjdk/adoptopenjdk11` and check the version.
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home
+
 # gcloud
 export PATH=$PATH:/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/
 
