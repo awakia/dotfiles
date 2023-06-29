@@ -11,10 +11,11 @@
   releaselog = log --merges --pretty=format:'- %C(cyan)\"%b\" %Creset%s %Cred%d'
   history = log --graph --date=short --decorate=short --pretty=format:'%C(yellow)%h %Cgreen%cd %Cblue%cn%Cred%d %Creset%s'
   unmerged = !git --no-pager diff --name-only --diff-filter=U
-  sync = !git checkout master && git pull origin master && git fetch -p origin && git branch -d $(git branch --merged | grep -v master | grep -v '*') && git push origin $(git branch -r --merged | grep origin/ | grep -v master | sed s~origin/~:~)
+  default-branch = !git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'
   alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
-	sync-safe = !git branch checkout master && git pull origin master && git fetch -p origin && git branch -d $(git branch --merged | grep -v master | grep -v '*')
-	ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
+	sync = !MASTER=`git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'` && git branch checkout $MASTER && git pull origin $MASTER && git fetch -p origin && git branch -d $(git branch --merged | grep -v $MASTER | grep -v '*')
+	sync-del = !MASTER=`git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'` && git branch checkout $MASTER && git pull origin $MASTER && git fetch -p origin && git branch -d $(git branch --merged | grep -v $MASTER | grep -v '*') && git push origin $(git branch -r --merged | grep origin/ | grep -v $MASTER | sed s~origin/~:~)
+  ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
 	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
 	openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
 [core]
