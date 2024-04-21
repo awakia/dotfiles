@@ -57,3 +57,10 @@ preexec_functions=($preexec_functions show_working_dir)
 
 ## let aws sdk to use ~/.aws/config and ~/.aws/credentials
 export AWS_SDK_LOAD_CONFIG=1
+
+# bun completions
+[ -s "/Users/awakia/.bun/_bun" ] && source "/Users/awakia/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
