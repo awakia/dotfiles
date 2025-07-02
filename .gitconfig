@@ -23,13 +23,28 @@
       while [ $# -gt 0 ]; do \
           case $1 in \
               -a|--all) add_flag='-u' ;; \
-              -A|--all-new) add_flag='-A' ;; \
+              -A) add_flag='-A' ;; \
           esac; \
           shift; \
       done; \
       [ -n \"$add_flag\" ] && git add $add_flag; \
-      msg=$(git diff --staged | claude -p 'Based on these changes, generate a concise commit message following conventional commits format. Output only commit message.'); \
-      git commit -m \"$msg\"; \
+      if [ -z \"$(git diff --staged)\" ]; then \
+          echo 'No staged changes'; \
+          return 1; \
+      fi; \
+      context=\"Recent commit messages in this project:\n\"; \
+      context+=$(git log --oneline -10 --pretty=format:'- %s'); \
+      context+=\"\n\nCurrent changes:\n\"; \
+      context+=$(git diff --staged); \
+      msg=$(echo \"$context\" | claude -p \
+          'Based on the recent commit history and current changes, generate a commit message that following conventional commits format. Output only commit message.'); \
+      echo \"Generated: $msg\"; \
+      read -p 'Use this message? (y/n/e) ' choice; \
+      case $choice in \
+          y) git commit -m \"$msg\" ;; \
+          e) git commit -e -m \"$msg\" ;; \
+          *) echo 'Cancelled' ;; \
+      esac; \
   }; f"
 [core]
   editor = emacs
