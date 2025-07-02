@@ -18,6 +18,19 @@
   ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
 	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
 	openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
+  cm = "!f() { \
+      add_flag=''; \
+      while [ $# -gt 0 ]; do \
+          case $1 in \
+              -a|--all) add_flag='-u' ;; \
+              -A|--all-new) add_flag='-A' ;; \
+          esac; \
+          shift; \
+      done; \
+      [ -n \"$add_flag\" ] && git add $add_flag; \
+      msg=$(git diff --staged | claude -p 'Based on these changes, generate a concise commit message following conventional commits format. Output only commit message.'); \
+      git commit -m \"$msg\"; \
+  }; f"
 [core]
   editor = emacs
 [mergetool "diffmerge"]
