@@ -44,7 +44,7 @@
               prompt=\"$context\"; \
           fi; \
           msg=$(echo \"$prompt\" | claude -p \
-              'Based on the recent commit history and current changes, generate a commit message that follows conventional commits format. Output only commit message.'); \
+              'Generate a commit message following the project style. If no clear pattern exists, use conventional commits. Output only commit message.'); \
           echo \"Generated: $msg\"; \
           read -p 'Use this message? (y/n/e/r=regenerate with prompt) ' choice; \
           case $choice in \
