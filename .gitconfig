@@ -36,15 +36,27 @@
       context+=$(git log --oneline -10 --pretty=format:'- %s'); \
       context+=\"\n\nCurrent changes:\n\"; \
       context+=$(git diff --staged); \
-      msg=$(echo \"$context\" | claude -p \
-          'Based on the recent commit history and current changes, generate a commit message that following conventional commits format. Output only commit message.'); \
-      echo \"Generated: $msg\"; \
-      read -p 'Use this message? (y/n/e) ' choice; \
-      case $choice in \
-          y) git commit -m \"$msg\" ;; \
-          e) git commit -e -m \"$msg\" ;; \
-          *) echo 'Cancelled' ;; \
-      esac; \
+      additional_prompt=''; \
+      while true; do \
+          if [ -n \"$additional_prompt\" ]; then \
+              prompt=\"$context\n\nAdditional instructions: $additional_prompt\"; \
+          else \
+              prompt=\"$context\"; \
+          fi; \
+          msg=$(echo \"$prompt\" | claude -p \
+              'Based on the recent commit history and current changes, generate a commit message that follows conventional commits format. Output only commit message.'); \
+          echo \"Generated: $msg\"; \
+          read -p 'Use this message? (y/n/e/r=regenerate with prompt) ' choice; \
+          case $choice in \
+              y) git commit -m \"$msg\"; break ;; \
+              e) git commit -e -m \"$msg\"; break ;; \
+              n) echo 'Cancelled'; break ;; \
+              r) \
+                  read -p 'Additional instructions (e.g., \"make it shorter\", \"add more detail\", \"mention the bug fix\"): ' additional_prompt; \
+                  continue ;; \
+              *) echo 'Please choose y/n/e/r'; continue ;; \
+          esac; \
+      done; \
   }; f"
 [core]
   editor = emacs
