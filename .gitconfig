@@ -38,13 +38,11 @@
       context+=$(git diff --staged); \
       additional_prompt=''; \
       while true; do \
+          prompt='Generate a commit message following the project style. If no clear pattern exists, use conventional commits. Do not mention about claude code. Directly output commit message'; \
           if [ -n \"$additional_prompt\" ]; then \
-              prompt=\"$context\n\nAdditional instructions: $additional_prompt\"; \
-          else \
-              prompt=\"$context\"; \
+              prompt=\"$prompt $additional_prompt\"; \
           fi; \
-          msg=$(echo \"$prompt\" | claude -p \
-              'Generate a commit message following the project style. If no clear pattern exists, use conventional commits. Output only commit message.'); \
+          msg=$(echo \"$context\" | claude -p \"$prompt\"); \
           echo \"Generated: $msg\"; \
           read -p 'Use this message? (y/n/e/r=regenerate with prompt) ' choice; \
           case $choice in \
