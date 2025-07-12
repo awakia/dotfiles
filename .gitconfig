@@ -18,6 +18,44 @@
   ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
 	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
 	openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
+  cm = "!f() { \
+      add_flag=''; \
+      while [ $# -gt 0 ]; do \
+          case $1 in \
+              -a|--all) add_flag='-u' ;; \
+              -A) add_flag='-A' ;; \
+          esac; \
+          shift; \
+      done; \
+      [ -n \"$add_flag\" ] && git add $add_flag; \
+      if [ -z \"$(git diff --staged)\" ]; then \
+          echo 'No staged changes'; \
+          return 1; \
+      fi; \
+      context=\"Recent commit messages in this project:\n\"; \
+      context+=$(git log --oneline -10 --pretty=format:'- %s'); \
+      context+=\"\n\nCurrent changes:\n\"; \
+      context+=$(git diff --staged); \
+      additional_prompt=''; \
+      while true; do \
+          prompt='Generate a commit message following the project style. If no clear pattern exists, use conventional commits. Do not mention about claude code. Directly output commit message'; \
+          if [ -n \"$additional_prompt\" ]; then \
+              prompt=\"$prompt $additional_prompt\"; \
+          fi; \
+          msg=$(echo \"$context\" | claude -p \"$prompt\"); \
+          echo \"Generated: $msg\"; \
+          read -p 'Use this message? (y/n/e/r=regenerate with prompt) ' choice; \
+          case $choice in \
+              y) git commit -m \"$msg\"; break ;; \
+              e) git commit -e -m \"$msg\"; break ;; \
+              n) echo 'Cancelled'; break ;; \
+              r) \
+                  read -p 'Additional instructions (e.g., \"make it shorter\", \"add more detail\", \"mention the bug fix\"): ' additional_prompt; \
+                  continue ;; \
+              *) echo 'Please choose y/n/e/r'; continue ;; \
+          esac; \
+      done; \
+  }; f"
 [core]
   editor = emacs
 [mergetool "diffmerge"]
