@@ -44,7 +44,8 @@
           fi; \
           msg=$(echo \"$context\" | claude -p \"$prompt\"); \
           echo \"Generated: $msg\"; \
-          read -p 'Use this message? (y/n/e/r=regenerate with prompt) ' choice; \
+          read -p 'Use this message? [Y/n/e/r=regenerate with prompt] (default: y) ' choice; \
+          [ -z "$choice" ] && choice=y; \
           case $choice in \
               y) git commit -m \"$msg\"; break ;; \
               e) git commit -e -m \"$msg\"; break ;; \
