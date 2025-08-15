@@ -13,8 +13,33 @@
   unmerged = !git --no-pager diff --name-only --diff-filter=U
   default-branch = !git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'
   alias = !git config --list | grep 'alias\\.' | sed 's/alias\\.\\([^=]*\\)=\\(.*\\)/\\1\\\t => \\2/' | sort
-	sync = !MASTER=`git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'` && git checkout $MASTER && git pull origin $MASTER && git fetch -p origin && git branch -d $(git branch --merged | grep -v $MASTER | grep -v '*')
-	sync-del = !MASTER=`git symbolic-ref --short refs/remotes/origin/HEAD | sed 's@^origin/@@'` && git checkout $MASTER && git pull origin $MASTER && git fetch -p origin && git branch -d $(git branch --merged | grep -v $MASTER | grep -v '*') && git push origin $(git branch -r --merged | grep origin/ | grep -v $MASTER | sed s~origin/~:~)
+  sync = "!f(){ \
+    set -e; \
+    MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); \
+    [ -z \"$MASTER\" ] && MASTER=main; \
+    git fetch -p origin; \
+    git switch \"$MASTER\" 2>/dev/null || git checkout \"$MASTER\"; \
+    git pull --ff-only origin \"$MASTER\"; \
+    merged=$(git for-each-ref refs/heads --format='%(refname:short)' --merged \"$MASTER\" | grep -v \"^$MASTER$\"); \
+    [ -z \"$merged\" ] && { echo \"No merged branches.\"; exit 0; }; \
+    for br in $merged; do \
+      git worktree list --porcelain | \
+        awk -v b=\"$br\" '/^worktree /{wt=substr($0,10)} /^branch /{x=$2; sub(\"refs/heads/\",\"\",x); if(x==b){print wt}}' | \
+        while IFS= read -r wt; do \
+          [ -z \"$wt\" ] && continue; \
+          echo \"Removing worktree: $wt (branch: $br)\"; \
+          if ! git worktree remove \"$wt\"; then \
+            echo \"Skip removing $wt (has changes/untracked).\"; \
+          fi; \
+        done; \
+      echo \"Deleting branch: $br\"; \
+      if ! git branch -d \"$br\"; then \
+        echo \"Skip deleting $br (still checked out or not fully merged).\"; \
+      fi; \
+    done; \
+  }; f"
+	ghprune = "!MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); [ -z \"$MASTER\" ] && MASTER=main; git fetch -p origin && git for-each-ref 'refs/remotes/origin' --format='%(refname:short)' --merged \"origin/$MASTER\" | grep -v -E \"^origin/($MASTER|HEAD)$\" | sed 's%^origin/%%' | xargs -n1 -I{} sh -c 'echo Deleting remote branch: {}; git push origin \":{}\" || echo \"Skip {} (protected or permission denied)\"'"
+  ghprune-dry = "!MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); [ -z \"$MASTER\" ] && MASTER=main; git fetch -p origin && git for-each-ref 'refs/remotes/origin' --format='%(refname:short)' --merged \"origin/$MASTER\" | grep -v -E \"^origin/($MASTER|HEAD)$\" | sed 's%^origin/%%'"
   ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
 	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
 	openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
