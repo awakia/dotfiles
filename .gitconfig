@@ -23,19 +23,23 @@
     merged=$(git for-each-ref refs/heads --format='%(refname:short)' --merged \"$MASTER\" | grep -v \"^$MASTER$\"); \
     [ -z \"$merged\" ] && { echo \"No merged branches.\"; exit 0; }; \
     for br in $merged; do \
-      git worktree list --porcelain | \
-        awk -v b=\"$br\" '/^worktree /{wt=substr($0,10)} /^branch /{x=$2; sub(\"refs/heads/\",\"\",x); if(x==b){print wt}}' | \
-        while IFS= read -r wt; do \
-          [ -z \"$wt\" ] && continue; \
-          echo \"Removing worktree: $wt (branch: $br)\"; \
-          if ! git worktree remove \"$wt\"; then \
-            echo \"Skip removing $wt (has changes/untracked).\"; \
+      wt_paths=$(git worktree list --porcelain | awk -v b=\"$br\" '/^worktree /{wt=substr($0,10)} /^branch /{x=$2; sub(\"refs/heads/\",\"\",x); if(x==b){print wt}}'); \
+      if [ -n \"$wt_paths\" ]; then \
+        dirty_found=\"\"; \
+        for wt in $wt_paths; do \
+          if [ -n \"$(git -C \"$wt\" status --porcelain)\" ]; then \
+            echo \"Skip $br (worktree dirty: $wt)\"; \
+            dirty_found=1; \
           fi; \
         done; \
-      echo \"Deleting branch: $br\"; \
-      if ! git branch -d \"$br\"; then \
-        echo \"Skip deleting $br (still checked out or not fully merged).\"; \
+        [ -n \"$dirty_found\" ] && continue; \
+        for wt in $wt_paths; do \
+          echo \"Removing worktree: $wt (branch: $br)\"; \
+          git worktree remove \"$wt\"; \
+        done; \
       fi; \
+      echo \"Deleting branch: $br\"; \
+      git branch -d \"$br\" || echo \"Skip deleting $br\"; \
     done; \
   }; f"
 	ghprune = "!MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); [ -z \"$MASTER\" ] && MASTER=main; git fetch -p origin && git for-each-ref 'refs/remotes/origin' --format='%(refname:short)' --merged \"origin/$MASTER\" | grep -v -E \"^origin/($MASTER|HEAD)$\" | sed 's%^origin/%%' | xargs -n1 -I{} sh -c 'echo Deleting remote branch: {}; git push origin \":{}\" || echo \"Skip {} (protected or permission denied)\"'"
