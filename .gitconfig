@@ -45,8 +45,8 @@
 	ghprune = "!MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); [ -z \"$MASTER\" ] && MASTER=main; git fetch -p origin && git for-each-ref 'refs/remotes/origin' --format='%(refname:short)' --merged \"origin/$MASTER\" | grep -v -E \"^origin/($MASTER|HEAD)$\" | sed 's%^origin/%%' | xargs -n1 -I{} sh -c 'echo Deleting remote branch: {}; git push origin \":{}\" || echo \"Skip {} (protected or permission denied)\"'"
   ghprune-dry = "!MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); [ -z \"$MASTER\" ] && MASTER=main; git fetch -p origin && git for-each-ref 'refs/remotes/origin' --format='%(refname:short)' --merged \"origin/$MASTER\" | grep -v -E \"^origin/($MASTER|HEAD)$\" | sed 's%^origin/%%'"
   ignore = "!gi() { curl -sL https://www.toptal.com/developers/gitignore/api/$@ ;}; gi"
-	showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
-	openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
+	showpr = "!f() { MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); git log --merges --oneline --reverse --ancestry-path $1...$MASTER | grep 'Merge pull request #' | head -n 1; }; f"
+	openpr = "!f() { MASTER=$(git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@'); gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...$MASTER | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%%'`; }; f"
   cm = "!f() { \
       add_flag=''; \
       while [ $# -gt 0 ]; do \
