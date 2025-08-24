@@ -1,5 +1,3 @@
-# check kernel and terminal
-
 KERNEL=unknown
 [ -x /usr/bin/uname ] && KERNEL=`/usr/bin/uname`
 [ -x /bin/uname ] && KERNEL=`/bin/uname`
@@ -44,7 +42,91 @@ unsetopt zle
 ;;
 esac
 
+# 自動ロードを有効化
+autoload -Uz add-zsh-hook
 
+set_tab_title() {
+    print -Pn "\e]0;$1\a"
+}
+
+get_current_dir() {
+    local dir="${PWD##*/}"
+    [[ "$PWD" == "$HOME" ]] && dir="~"
+    echo "$dir"
+}
+
+# タブタイトル更新関数
+update_tab_title() {
+    local dir=$(get_current_dir)
+
+    # Gitブランチ情報を取得（オプション）
+    local git_info=""
+    if git rev-parse --git-dir &>/dev/null 2>&1; then
+        local branch=$(git branch --show-current 2>/dev/null)
+        [[ -n "$branch" ]] && git_info=" [$branch]"
+    fi
+
+    set_tab_title "${dir}${git_info}"
+}
+
+# コマンド実行時のタブタイトル更新
+update_tab_title_preexec() {
+    local full_cmd="$1"
+    local cmd=${1%% *}
+    local dir=$(get_current_dir)
+
+    case "$full_cmd" in
+        # 開発サーバー系
+        *"run dev"*|"air"*)
+            set_tab_title "🔥 DEV: ${dir}"
+            ;;
+        *"run build"*|"go build"*)
+            set_tab_title "🔨 BUILD: ${dir}"
+            ;;
+        *"run test"*|"go test"*|"pytest"*)
+            set_tab_title "🧪 TEST: ${dir}"
+            ;;
+
+        # 言語別
+        "python"*|"uvicorn"*|"gunicorn"*|"flask"*|"streamlit"*)
+            set_tab_title "🐍 PY: ${dir}"
+            ;;
+        "go run"*)
+            set_tab_title "🏃 GO: ${dir}"
+            ;;
+        "node"*|"ts-node"*|"tsx"*)
+            set_tab_title "📗 JS: ${dir}"
+            ;;
+
+        # パッケージマネージャー
+        "pnpm"*|"npm"*|"yarn"*)
+            set_tab_title "📦 PKG: ${dir}"
+            ;;
+
+        # ツール
+        "claude"*)
+            set_tab_title "🤖 Claude: ${dir}"
+            ;;
+        "git "*)
+            set_tab_title "🔀 Git: ${dir}"
+            ;;
+        "docker"*)
+            set_tab_title "🐳 Docker: ${dir}"
+            ;;
+        "vim "*|"nvim "*|"code "*)
+            set_tab_title "✏️ Edit: ${dir}"
+            ;;
+
+        *)
+            # その他のコマンドもディレクトリは表示
+            set_tab_title "${dir}"
+            ;;
+    esac
+}
+
+# フックを登録
+add-zsh-hook precmd update_tab_title
+add-zsh-hook preexec update_tab_title_preexec
 
 # fundamental and common settings
 

@@ -49,12 +49,6 @@ change-repo() {
 }
 alias cr=change-repo
 
-# open new tab in same working directory on osx lion.
-function show_working_dir { print -Pn "\e]2; %~/ \a" }
-
-precmd_functions=($precmd_functions show_working_dir)
-preexec_functions=($preexec_functions show_working_dir)
-
 ## let aws sdk to use ~/.aws/config and ~/.aws/credentials
 export AWS_SDK_LOAD_CONFIG=1
 
