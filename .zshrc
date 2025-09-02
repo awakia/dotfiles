@@ -196,6 +196,10 @@ export LANG=ja_JP.UTF-8
 
 bindkey -e
 
+# Explicitly set Ctrl+K (kill-line) and Ctrl+Y (yank) keybindings
+bindkey '^K' kill-line
+bindkey '^Y' yank
+
 HISTFILE=~/.zsh-history
 HISTSIZE=1000000
 SAVEHIST=1000000
