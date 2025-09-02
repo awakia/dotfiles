@@ -42,92 +42,154 @@ unsetopt zle
 ;;
 esac
 
-# 自動ロードを有効化
+# ---------------------------------------------
+# タブタイトル: 「絵文字 + コマンド名(+サブコマンド/一致文字列) + ディレクトリ」
+# dev: 🟢 DEV
+# AI: 🤖 claude / 🤖 codex / 🤖 gemini
+# git: 🔀 git <subcmd>
+# docker: 🐳 docker <subcmd>
+# build/test: 🔨 <一致文字列> / 🧪 <一致文字列>  ← 正規表現の一致部分をそのまま表示
+# その他: cmd · dir[branch]
+# Gitは HEAD/SYMREF の変化で検出
+# ---------------------------------------------
+
 autoload -Uz add-zsh-hook
 
+# ---------- util ----------
 set_tab_title() {
-    print -Pn "\e]0;$1\a"
+  local raw="$1"
+  local safe=${raw//$'\e'/}
+  safe=${safe//$'\n'/ }
+  printf '\e]0;%s\a' "$safe"
+  [[ -n "$TMUX" ]] && printf '\ek%s\e\\' "$safe"
+}
+
+shorten_middle() {
+  local s="$1" max=${2:-30}
+  (( ${#s} <= max )) && { print -r -- "$s"; return; }
+  local half=$(( (max - 1) / 2 ))
+  print -r -- "${s[1,half]}…${s[-half+1,-1]}"
 }
 
 get_current_dir() {
-    local dir="${PWD##*/}"
-    [[ "$PWD" == "$HOME" ]] && dir="~"
-    echo "$dir"
+  local dir="${PWD##*/}"
+  [[ "$PWD" == "$HOME" ]] && dir="~"
+  print -r -- "$dir"
 }
 
-# タブタイトル更新関数
-update_tab_title() {
-    local dir=$(get_current_dir)
+# ---------- Git情報（HEAD/ブランチの変化で更新） ----------
+typeset -g __TAB_GIT_INFO=""
+typeset -g __TAB_LAST_HEAD=""
+typeset -g __TAB_LAST_SYMREF=""
 
-    # Gitブランチ情報を取得（オプション）
-    local git_info=""
-    if git rev-parse --git-dir &>/dev/null 2>&1; then
-        local branch=$(git branch --show-current 2>/dev/null)
-        [[ -n "$branch" ]] && git_info=" [$branch]"
-    fi
-
-    set_tab_title "${dir}${git_info}"
+update_git_info_if_needed() {
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+    __TAB_GIT_INFO=""; __TAB_LAST_HEAD=""; __TAB_LAST_SYMREF=""
+    return
+  fi
+  local hash symref branch
+  hash=$(git rev-parse --short=7 HEAD 2>/dev/null) || hash=""
+  symref=$(git symbolic-ref -q HEAD 2>/dev/null)    || symref=""
+  if [[ "$hash" == "$__TAB_LAST_HEAD" && "$symref" == "$__TAB_LAST_SYMREF" ]]; then
+    return
+  fi
+  __TAB_LAST_HEAD="$hash"; __TAB_LAST_SYMREF="$symref"
+  if [[ -n "$symref" ]]; then
+    branch="${symref#refs/heads/}"
+    __TAB_GIT_INFO=" [$branch]"
+  else
+    __TAB_GIT_INFO=" [$hash]"
+  fi
 }
 
-# コマンド実行時のタブタイトル更新
+# ---------- precmd: 基本タイトル（dir + Git簡易情報） ----------
+update_tab_title_precmd() {
+  update_git_info_if_needed
+  local dir=$(get_current_dir)
+  set_tab_title "$(shorten_middle "${dir}${__TAB_GIT_INFO}" 30)"
+}
+
+# ---------- preexec: コマンド内容に応じて一時的に上書き ----------
 update_tab_title_preexec() {
-    local full_cmd="$1"
-    local cmd=${1%% *}
-    local dir=$(get_current_dir)
+  local full="$1"
+  local dir=$(get_current_dir)
 
-    case "$full_cmd" in
-        # 開発サーバー系
-        *"run dev"*|"air"*)
-            set_tab_title "🔥 DEV: ${dir}"
-            ;;
-        *"run build"*|"go build"*)
-            set_tab_title "🔨 BUILD: ${dir}"
-            ;;
-        *"run test"*|"go test"*|"pytest"*)
-            set_tab_title "🧪 TEST: ${dir}"
-            ;;
+  # トークン分割（git/docker表示でサブコマンド名を出す用）
+  local -a tokens
+  tokens=("${(z)full}")
+  local cmd1=$tokens[1]
+  local cmd2=$tokens[2]
+  local cmd3=$tokens[3]
 
-        # 言語別
-        "python"*|"uvicorn"*|"gunicorn"*|"flask"*|"streamlit"*)
-            set_tab_title "🐍 PY: ${dir}"
-            ;;
-        "go run"*)
-            set_tab_title "🏃 GO: ${dir}"
-            ;;
-        "node"*|"ts-node"*|"tsx"*)
-            set_tab_title "📗 JS: ${dir}"
-            ;;
+  # --- devサーバー（代表的なやつ） ---
+  if [[ "$cmd1 $cmd2 $cmd3" == "pnpm run dev" || ( "$cmd1 $cmd2" == "npm run" && "$cmd3" == "dev" ) || \
+        "$cmd1 $cmd2 $cmd3" == "yarn run dev" || "$cmd1 $cmd2 $cmd3" == "bun run dev" || \
+        "$cmd1 $cmd2" == "next dev" || "$cmd1 $cmd2" == "nuxt dev" || \
+        "$cmd1" == "vite" || "$cmd1 $cmd2" == "astro dev" || "$cmd1 $cmd2" == "svelte-kit dev" || \
+        "$cmd1 $cmd2" == "webpack serve" || "$cmd1 $cmd2" == "rails s" || \
+        ( "$cmd1" == "uvicorn" && "$*" == *"--reload"* ) || "$cmd1" == "gunicorn" || "$cmd1" == "air" ]]; then
+    set_tab_title "$(shorten_middle "🟢 DEV · ${dir}" 30)"; return
+  fi
 
-        # パッケージマネージャー
-        "pnpm"*|"npm"*|"yarn"*)
-            set_tab_title "📦 PKG: ${dir}"
-            ;;
+  # --- AI CLI（名前区別して表示） ---
+  if [[ "$cmd1" == claude* ]]; then
+    set_tab_title "$(shorten_middle "🤖 claude · ${dir}" 30)"; return
+  fi
+  if [[ "$cmd1" == codex* ]]; then
+    set_tab_title "$(shorten_middle "🤖 codex · ${dir}" 30)"; return
+  fi
+  if [[ "$cmd1" == gemini* ]]; then
+    set_tab_title "$(shorten_middle "🤖 gemini · ${dir}" 30)"; return
+  fi
 
-        # ツール
-        "claude"*)
-            set_tab_title "🤖 Claude: ${dir}"
-            ;;
-        "git "*)
-            set_tab_title "🔀 Git: ${dir}"
-            ;;
-        "docker"*)
-            set_tab_title "🐳 Docker: ${dir}"
-            ;;
-        "vim "*|"nvim "*|"code "*)
-            set_tab_title "✏️ Edit: ${dir}"
-            ;;
+  # --- git（サブコマンド名を表示） ---
+  if [[ "$cmd1" == "git" ]]; then
+    if [[ -n "$cmd2" ]]; then
+      set_tab_title "$(shorten_middle "🔀 git ${cmd2} · ${dir}" 30)"; return
+    else
+      set_tab_title "$(shorten_middle "🔀 git · ${dir}" 30)"; return
+    fi
+  fi
 
-        *)
-            # その他のコマンドもディレクトリは表示
-            set_tab_title "${dir}"
-            ;;
-    esac
+  # --- docker（サブコマンド名を表示） ---
+  if [[ "$cmd1" == "docker" ]]; then
+    if [[ -n "$cmd2" ]]; then
+      set_tab_title "$(shorten_middle "🐳 docker ${cmd2} · ${dir}" 30)"; return
+    else
+      set_tab_title "$(shorten_middle "🐳 docker · ${dir}" 30)"; return
+    fi
+  fi
+
+  # --- build（正規表現で「一致文字列」をそのまま出す） ---
+  # 例: go build / pnpm run build / npm run build / yarn run build / bun run build / turbo build
+  if [[ "$full" =~ '((go)[[:space:]]+build)([[:space:]]|$)' || \
+        "$full" =~ '((pnpm|npm|yarn|bun)[[:space:]]+run[[:space:]]+build)([[:space:]]|$)' || \
+        "$full" =~ '((turbo)[[:space:]]+build)([[:space:]]|$)' ]]; then
+    local phrase="$MATCH"; phrase="${phrase%% }"  # 後端の空白を除去
+    set_tab_title "$(shorten_middle "🔨 ${phrase} · ${dir}" 30)"; return
+  fi
+
+  # --- test（正規表現で「一致文字列」をそのまま出す） ---
+  # 例: go test / pnpm run test / npm run test / yarn run test / bun run test / npm test / vitest
+  if [[ "$full" =~ '((go)[[:space:]]+test)([[:space:]]|$)' || \
+        "$full" =~ '((pnpm|npm|yarn|bun)[[:space:]]+run[[:space:]]+test)([[:space:]]|$)' || \
+        "$full" =~ '((npm|yarn)[[:space:]]+test)([[:space:]]|$)' || \
+        "$full" =~ '(^|[[:space:]])(vitest)([[:space:]]|$)' ]]; then
+    local phrase="$MATCH"; phrase="${phrase## }"; phrase="${phrase%% }"
+    set_tab_title "$(shorten_middle "🧪 ${phrase} · ${dir}" 30)"; return
+  fi
+
+  # --- その他（先頭コマンドだけ出す） ---
+  update_git_info_if_needed
+  local base="$(shorten_middle "$(get_current_dir)${__TAB_GIT_INFO}" 20)"
+  # 先頭単語（フルパスならベース名）
+  local head=${full%% *}; head=${head##*/}
+  set_tab_title "$(shorten_middle "${head} · ${base}" 30)"
 }
 
-# フックを登録
-add-zsh-hook precmd update_tab_title
+# ---------- hook登録 ----------
+add-zsh-hook precmd  update_tab_title_precmd
 add-zsh-hook preexec update_tab_title_preexec
-
 # fundamental and common settings
 
 export LANG=ja_JP.UTF-8
