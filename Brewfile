@@ -30,7 +30,7 @@ brew install google-cloud-sdk || true
 # brew install licecap || true  # GIF animation caputuring
 brew install skitch || true
 brew install slack || true
-brew install visual-studio-code || true
+brew install cursor || true
 brew install zoom || true
 
 
@@ -41,12 +41,9 @@ brew install ghq || true
 brew install go || true
 brew install gh || true
 brew install lv || true
-brew install nkf || true
 brew install node || true
-# brew install peco || true
-brew install poetry || true
-# brew install rbenv || true
-# brew install ruby-build || true
+brew install uv || true
+brew install mise || true
 brew install tree || true
 
 # remove outdated versions from teh cellar

@@ -1,6 +1,8 @@
 export EDITOR=emacs
 export BUNDLER_EDITOR=code
 
+eval "$(mise activate zsh)"
+
 # rbenv
 export PATH=/usr/local/bin:$PATH
 which rbenv > /dev/null 2>&1
