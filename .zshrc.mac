@@ -8,10 +8,6 @@ export PATH=/usr/local/bin:$PATH
 which rbenv > /dev/null 2>&1
 test $? -eq 0 && eval "$(rbenv init - zsh)"
 
-# nodenv
-export PATH="$HOME/.nodenv/bin:$PATH"
-which nodenv > /dev/null 2>&1
-test $? -eq 0 && eval "$(nodenv init -)"
 
 # pyenv
 export PYENV_ROOT="${HOME}/.pyenv"
@@ -65,3 +61,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 if command -v direnv > /dev/null 2>&1; then
   eval "$(direnv hook zsh)"
 fi
+
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
